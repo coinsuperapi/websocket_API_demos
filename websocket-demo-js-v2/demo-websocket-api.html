@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+   <head>
+   	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>websocket - BUC/BTC</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>  
+	<script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js" type="text/javascript"></script> 
+    <script type="text/javascript">
+		var serverInfo = {
+			useSSL:true,
+			serverHost:"",
+			serverPort:"",
+			userName:"",
+			userCode:"",
+			clientId:""
+		};
+		function MqttConnect(topic,aElem) {
+			//check necessary serverInfo
+			for(var p in serverInfo){
+				if(!serverInfo[p]||serverInfo[p]==""){
+					alert(p + " cannot be empty");
+					return;
+				}
+			}
+			//create a client
+			var client = new Paho.MQTT.Client(serverInfo.serverHost, Number(serverInfo.serverPort), serverInfo.clientId);
+			//connect to server
+			client.connect({userName:serverInfo.userName,password:serverInfo.userCode,useSSL:serverInfo.useSSL,onSuccess:onConnect});
+			//handle connect
+			function onConnect() {   
+				  console.log("onConnected");
+				  client.subscribe(topic);
+				  console.log('subscribe topic '+ topic +' success');
+			}
+			//handle connectionLost
+			client.onConnectionLost = function onConnectionLost(responseObject) {
+				if (responseObject.errorCode !== 0) {
+					console.log("onConnectionLost:"+responseObject.errorMessage);  
+					console.log("connection is closed");  
+					//You can do reconnect and resubscribe here -- if you lost connection from server, you need both reconnect and resubscribe.
+				 }
+			}
+			//handle message
+			client.onMessageArrived = function onMessageArrived(message) {
+				//console.log(message);
+				console.log("received message:"+message.payloadString);
+			}
+		}
+    </script>
+	<style>
+		p{display:inline;}
+	</style>
+   </head>
+   <body>
+	  <div><p>Press F12 to see the log from browse console, then click one of the items below to subscribe.</p></div>
+	  <hr/>
+      <div id="sse">
+         <a href="javascript:void(0)" onclick="MqttConnect('exchange_ha_prod_hk/api/ws/v1/market/depth/BTC_USD',this)">Subscribe Market Depth(BTC/USD)</a>
+      </div><br/>
+	  <div id="sse">
+         <a href="javascript:void(0)" onclick="MqttConnect('exchange_ha_prod_hk/api/ws/v1/market/orderBook/BTC_USD/0.01',this)">Subscribe OrderBook(BTC/USD)(0.01)</a>
+      </div><br/>
+	  <div id="sse">
+         <a href="javascript:void(0)" onclick="MqttConnect('exchange_ha_prod_hk/api/ws/v1/market/kline/BTC_USD/60000',this)">Subscribe K Line(BTC/USD)(1Minute:60000)</a>
+      </div><br/>
+	  <div id="sse">
+         <a href="javascript:void(0)" onclick="MqttConnect('exchange_ha_prod_hk/api/ws/v1/market/tickers/BTC_USD',this)">Subscribe Tickers(BTC/USD)</a>
+      </div>
+   </body>
+</html>
