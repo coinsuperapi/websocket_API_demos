@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Lynn Li
  */
 public class WebSocketServerInfo {
-    private static final String $SERVER_PROTOCOL = "wss";
+    private static final String $SERVER_PROTOCOL = "tcp";
     private static final String $SERVER_HOST = "";
     private static final String $SERVER_PORT = "";
     private static final String SHAKE_URL = $SERVER_PROTOCOL+"://"+$SERVER_HOST+":"+$SERVER_PORT;
