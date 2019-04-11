@@ -1,4 +1,4 @@
-# REST API demos
+# Websocket API demos
 
 简介
 
